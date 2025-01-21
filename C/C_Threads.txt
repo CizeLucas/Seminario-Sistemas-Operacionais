@@ -1,0 +1,81 @@
+Objetivo: Demonstrar como as threads funcionam em C, mostrando como criar múltiplas threads e a importância da sincronização de dados compartilhados entre elas (usando pthread_mutex para evitar condições de corrida).
+
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int contador = 0;  // Variável compartilhada
+
+pthread_mutex_t lock;
+
+void* incrementar(void* arg) {
+    // Adquire o bloqueio (mutex) para garantir acesso exclusivo
+    pthread_mutex_lock(&lock);
+
+    int id = ((int)arg);
+    for (int i = 0; i < 5; i++) {
+        contador++;  // Incrementa o contador compartilhado
+        printf("Thread %d, contador: %d\n", id, contador);
+    }
+
+    // Libera o bloqueio
+    pthread_mutex_unlock(&lock);
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[2];
+    int thread_id[2] = {1, 2};
+    
+    // Inicializa o mutex
+    pthread_mutex_init(&lock, NULL);
+
+    // Cria duas threads
+    for (int i = 0; i < 2; i++) {
+        pthread_create(&threads[i], NULL, incrementar, &thread_id[i]);
+    }
+
+    // Aguarda as threads terminarem
+    for (int i = 0; i < 2; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    // Finaliza o mutex
+    pthread_mutex_destroy(&lock);
+
+    printf("Contador final: %d\n", contador);
+    return 0;
+}
+
+Explicação do Código:
+Inclusão de Cabeçalhos:
+
+#include <pthread.h>: Para usar as funções relacionadas a threads.
+#include <stdio.h>: Para funções de entrada e saída.
+#include <stdlib.h>: Para funções utilitárias, como malloc() (não utilizada neste código, mas comum em programas com threads).
+
+Variável Compartilhada:
+
+int contador = 0;: A variável contador é compartilhada entre as threads. Esse é um exemplo clássico de como as threads podem acessar dados compartilhados.
+Mutex para Sincronização:
+
+pthread_mutex_t lock;: Declara o mutex, utilizado para garantir que apenas uma thread modifique o contador por vez.
+Funções de mutex:
+pthread_mutex_lock(&lock): Adquire o bloqueio para garantir acesso exclusivo ao contador.
+pthread_mutex_unlock(&lock): Libera o bloqueio após a modificação do contador.
+Criação de Threads:
+
+pthread_create(&threads[i], NULL, incrementar, &thread_id[i]);: Cria as threads, que executam a função incrementar().
+A função incrementar() é onde cada thread vai aumentar o valor de contador e imprimir o resultado.
+Espera pelas Threads:
+
+pthread_join(threads[i], NULL);: A função pthread_join() é usada para garantir que o programa principal aguarde a conclusão das threads antes de continuar e finalizar o programa.
+Finalização do Mutex:
+
+pthread_mutex_destroy(&lock);: Finaliza o mutex após o uso.
+O que falar no seminário:
+Definição de Threads: Threads são unidades menores de execução dentro de um processo que compartilham o mesmo espaço de memória.
+Criação de Threads com pthread_create(): As threads são criadas para executar funções específicas de forma concorrente.
+Sincronização com Mutex: Como as threads compartilham dados, é necessário usar mecanismos como mutexes para evitar condições de corrida (race conditions) e garantir que apenas uma thread acesse a variável contador por vez.
+Função pthread_join(): A função pthread_join() é usada para garantir que o programa principal espere todas as threads terminarem sua execução antes de prosseguir.
+Vantagens das Threads: Comparando com os processos, threads são mais eficientes em termos de uso de memória, pois elas compartilham o espaço de memória do processo pai.

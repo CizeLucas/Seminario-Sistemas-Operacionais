@@ -1,0 +1,49 @@
+Objetivo: Demonstrar como processos podem ser criados e como eles se comunicam. O exemplo usará a função fork() para criar um processo filho e exibirá como o processo pai e o processo filho podem operar simultaneamente.
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+
+int main() {
+    pid_t pid = fork();  // Cria um novo processo
+
+    if (pid == 0) {
+        // Processo Filho
+        printf("Este é o processo filho com PID: %d\n", getpid());
+    } else if (pid > 0) {
+        // Processo Pai
+        printf("Este é o processo pai com PID: %d, e o PID do filho é: %d\n", getpid(), pid);
+    } else {
+        // Se o fork falhar
+        perror("Falha ao criar o processo");
+    }
+
+    return 0;
+}
+
+Explicação do Código:
+Inclusão de Cabeçalhos:
+
+#include <stdio.h>: Para funções de entrada e saída, como printf().
+#include <unistd.h>: Para a função fork() que cria novos processos.
+#include <sys/types.h>: Para usar o tipo pid_t, que representa o ID do processo.
+Função fork():
+
+O comando fork() cria um novo processo filho. Após a chamada de fork(), tanto o processo pai quanto o filho continuam a execução de forma independente.
+Retorno de fork(): O pid retorna:
+0 no processo filho.
+O PID do filho no processo pai.
+Se o fork() falhar, ele retorna um valor negativo.
+Identificação dos Processos:
+
+Usamos getpid() para imprimir o PID (Process ID) de cada processo, ajudando a identificar qual processo é o pai e qual é o filho.
+Processo Pai vs Processo Filho:
+
+O código diferencia o comportamento entre o processo pai e o processo filho. O pai imprime seu PID e o do filho, enquanto o filho apenas imprime seu próprio PID.
+O que falar no seminário:
+Definição de Processos: Processos são entidades independentes em execução, com seu próprio espaço de memória.
+Função fork(): O fork() cria um processo filho, que é uma cópia do processo pai.
+Independência dos Processos: O código mostra como os processos operam de forma independente, mesmo que partilhem o código executado (após o fork).
+Processos no Sistema Operacional: O OS gerencia a criação e execução dos processos, garantindo que cada um tenha sua própria área de memória.
+Vantagens e Desvantagens: Fale sobre a sobrecarga de criar novos processos (além do custo de memória) e como isso pode ser menos eficiente que usar threads.
+Resultado Esperado: Ao rodar o programa, você verá duas saídas diferentes: uma para o pai e outra para o filho, mostrando os PIDs.
