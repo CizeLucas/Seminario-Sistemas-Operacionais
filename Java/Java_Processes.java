@@ -7,24 +7,27 @@ public class Java_Processes {
     public static void main(String[] args) {
         ArrayList<String[]> commands = new ArrayList<String[]>(5);
 
+        // URLs a serem testadas via ping
         String[] URLs = {"google.com", "1236489", "youtube.com", "127.0.0.1", "sitenãoexiste321.com.br"};
 
         for (String url : URLs) {
             String[] command = {"ping", "-c", "4", url}; //Linux
             //String[] command = {"ping", url}; //Windows
-            commands.add(command); // Comando PING a ser executado para sistemas UNIX
+
+            commands.add(command); // Cria um arraylist de Comandos PING a ser executados
         }
 
         try {
-            // Criando o processo usando ProcessBuilder
+            // Criando os processos usando ProcessBuilder
             ArrayList<ProcessBuilder> processesBuilder = new ArrayList<ProcessBuilder>(5);
             for (String[] command : commands)
-                processesBuilder.add(new ProcessBuilder(command));
-
+                processesBuilder.add(new ProcessBuilder(command)); // Instancia os processos
+            
             ArrayList<Process> processes = new ArrayList<Process>(5);
             for(ProcessBuilder processBuilder : processesBuilder)
-                processes.add(processBuilder.start());
+                processes.add(processBuilder.start()); // Inicializa os processos
 
+            // Escuta a saida (stdout) de todos processos criados
             for (Process process : processes) {
                 listenToProcess(process);
             }
