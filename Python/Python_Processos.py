@@ -7,7 +7,7 @@ def task(num):
     sleepTime = random.randint(1, 4)
     time.sleep(sleepTime)  # Simula tempo de processamento
 
-    if num == 2:  # Vamos provocar um erro no processo 2
+    if num == 1:  # Vamos provocar um erro no processo 2
         raise Exception(f"Erro fatal no processo {num}")
 
     print(f"Processo {num} concluido com sucesso (dormiu por {sleepTime} Segundos)")

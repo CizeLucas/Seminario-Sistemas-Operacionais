@@ -10,8 +10,8 @@ public class Java_Processes {
         String[] URLs = {"google.com", "1236489", "youtube.com", "127.0.0.1", "sitenãoexiste321.com.br"};
 
         for (String url : URLs) {
-            //String[] command = {"ping", "-c", "4", url};
-            String[] command = {"ping", url};
+            String[] command = {"ping", "-c", "4", url}; //Linux
+            //String[] command = {"ping", url}; //Windows
             commands.add(command); // Comando PING a ser executado para sistemas UNIX
         }
 
